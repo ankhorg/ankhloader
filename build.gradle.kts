@@ -37,10 +37,7 @@ allprojects {
   afterEvaluate {
     publishing {
       repositories {
-        System.getenv().forEach{
-          logger.error("{}: {}", it.key, it.value)
-        }
-        if (System.getenv("CI")?.isNotEmpty() == true) {
+        if (System.getenv("BUILD_NUMBER")?.isNotEmpty() == true) {
           if (project.version.toString().endsWith("-SNAPSHOT")) {
             maven("https://repo.inker.bot/repository/maven-snapshots/") {
               credentials {
