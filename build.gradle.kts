@@ -37,6 +37,9 @@ allprojects {
   afterEvaluate {
     publishing {
       repositories {
+        System.getenv().forEach{
+          logger.info("{}: {}", it.key, it.value)
+        }
         if (System.getenv("CI")?.isNotEmpty() == true) {
           if (project.version.toString().endsWith("-SNAPSHOT")) {
             maven("https://repo.inker.bot/repository/maven-snapshots/") {
@@ -157,10 +160,4 @@ dependencies {
   api("org.ow2.asm:asm:9.5")
   // compileOnly("bot.inker.ulmc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
   // compileOnly("bot.inker.ulmc.paper:paper-server:1.19.4-R0.1-SNAPSHOT:mojang-mapped")
-}
-
-tasks.jar {
-  manifest {
-    attributes["Main-Class"] = "org.inksnow.aloader.TestMain"
-  }
 }
