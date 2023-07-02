@@ -38,7 +38,7 @@ allprojects {
     publishing {
       repositories {
         System.getenv().forEach{
-          logger.info("{}: {}", it.key, it.value)
+          logger.error("{}: {}", it.key, it.value)
         }
         if (System.getenv("CI")?.isNotEmpty() == true) {
           if (project.version.toString().endsWith("-SNAPSHOT")) {
