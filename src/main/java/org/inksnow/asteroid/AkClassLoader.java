@@ -16,11 +16,13 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public final class AkClassLoader extends URLClassLoader {
+  private static final ClassLoader nullClassRef = new ClassLoader(null) {
+  };
+
   static {
     ClassLoader.registerAsParallelCapable();
   }
 
-  private static final ClassLoader nullClassRef = new ClassLoader(null) {};
   private final Set<AkClassDelegateEntry> delegateEntry = new TreeSet<>();
   private final Set<AkResourceMapEntry> resourceMapEntry = new TreeSet<>();
 
@@ -114,15 +116,14 @@ public final class AkClassLoader extends URLClassLoader {
 
   @Override
   protected Class<?> findClass(final String name)
-      throws ClassNotFoundException
-  {
+      throws ClassNotFoundException {
     val url = findResource(name.replace('.', '/').concat(".class"));
-    if(url == null){
+    if (url == null) {
       throw new ClassNotFoundException(name);
     }
     try {
       byte[] b;
-      try(val in = url.openStream()) {
+      try (val in = url.openStream()) {
         b = AkIOUtils.readAllBytes(in);
       }
       return defineClass(name, b, 0, b.length, new CodeSource(url, (Certificate[]) null));
@@ -165,19 +166,19 @@ public final class AkClassLoader extends URLClassLoader {
       if (entryClassLoader == this) {
         try {
           result[resultPtr++] = findResources(path);
-        }catch (IOException e){
+        } catch (IOException e) {
           //
         }
       } else if (entryClassLoader == null) {
         try {
           result[resultPtr++] = nullClassRef.getResources(path);
-        }catch (IOException e){
+        } catch (IOException e) {
           //
         }
       } else {
         try {
           result[resultPtr++] = parentEntry.classLoader().getResources(path);
-        }catch (IOException e){
+        } catch (IOException e) {
           //
         }
       }
@@ -216,17 +217,17 @@ public final class AkClassLoader extends URLClassLoader {
       val entryClassLoader = parentEntry.classLoader();
       if (entryClassLoader == this) {
         val resource = findResource(name);
-        if(resource != null){
+        if (resource != null) {
           return resource;
         }
       } else if (entryClassLoader == null) {
         val resource = nullClassRef.getResource(name);
-        if(resource != null){
+        if (resource != null) {
           return resource;
         }
       } else {
         val resource = parentEntry.classLoader().getResource(name);
-        if(resource != null){
+        if (resource != null) {
           return resource;
         }
       }

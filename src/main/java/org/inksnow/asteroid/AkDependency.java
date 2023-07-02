@@ -23,6 +23,19 @@ public final class AkDependency {
   private final List<ExclusionConfig> exclusions;
   private final Map<String, String> properties;
 
+  public static AkDependency fillDependencyDefault(AkArtifact artifact, AkDependency dependency) {
+    return AkDependency.builder()
+        .groupId(dependency.groupId() == null ? artifact.groupId() : dependency.groupId())
+        .artifactId(dependency.artifactId() == null ? artifact.artifactId() : dependency.artifactId())
+        .version(dependency.version() == null ? artifact.version() : dependency.version())
+        .extension(dependency.extension() == null ? "jar" : dependency.extension())
+        .classifier(dependency.classifier() == null ? "" : dependency.classifier())
+        .scope(dependency.scope() == null ? "runtime" : dependency.scope())
+        .exclusions(dependency.exclusions())
+        .properties(dependency.properties())
+        .build();
+  }
+
   @Getter
   @lombok.Builder
   @AllArgsConstructor(access = AccessLevel.PRIVATE)

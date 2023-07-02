@@ -4,15 +4,31 @@ import com.hrakaroo.glob.MatchingEngine;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import org.inksnow.asteroid.AkDependency;
+import org.inksnow.asteroid.AkLoader;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarFile;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public final class ConfigPlugin {
   @Getter
   private final Map<String, EnvironmentConfig> environments;
+
+  public static ConfigPlugin loadAkPluginConfig(JarFile jarFile, String name) throws IOException {
+    val asteroidPluginEntry = jarFile.getEntry("asteroid-plugin.json");
+    if (asteroidPluginEntry == null) {
+      return null;
+    }
+    try (val reader = new InputStreamReader(jarFile.getInputStream(asteroidPluginEntry), StandardCharsets.UTF_8)) {
+      return AkLoader.gson.fromJson(reader, ConfigPlugin.class);
+    }
+  }
 
   @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
   public final class DelegateConfig {

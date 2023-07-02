@@ -15,25 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class AbstractEnvironment implements AkEnvironment {
-  protected abstract AkLoaderResolver selfResolver();
-
-  @Override
-  public List<AkArtifact> installedArtifact() {
-    return new ArrayList<>(selfResolver().installedArtifactMap().values());
-  }
-
-  @Override
-  public void add(AkDependency config) {
-    selfResolver().dependencies()
-        .add(createDependency(config));
-  }
-
-  @Override
-  public AkDeployResult deploy() {
-    return selfResolver().deploy();
-  }
-
-
   protected static Dependency createDependency(AkDependency config) {
     val artifact = new DefaultArtifact(
         config.groupId(),
@@ -68,6 +49,24 @@ public abstract class AbstractEnvironment implements AkEnvironment {
         (anyNotNull && config.classifier() == null) ? "*" : config.classifier(),
         (anyNotNull && config.extension() == null) ? "*" : config.extension()
     );
+  }
+
+  protected abstract AkLoaderResolver selfResolver();
+
+  @Override
+  public List<AkArtifact> installedArtifact() {
+    return new ArrayList<>(selfResolver().installedArtifactMap().values());
+  }
+
+  @Override
+  public void add(AkDependency config) {
+    selfResolver().dependencies()
+        .add(createDependency(config));
+  }
+
+  @Override
+  public AkDeployResult deploy() {
+    return selfResolver().deploy();
   }
 
 }

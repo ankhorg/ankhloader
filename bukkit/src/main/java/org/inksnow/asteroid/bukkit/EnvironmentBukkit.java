@@ -66,12 +66,8 @@ public final class EnvironmentBukkit extends EnvironmentUcl {
       return;
     }
     boolean isPlugin = false;
-    ConfigPlugin akPluginConfig = null;
     try (val jarFile = new JarFile(artifact.file())) {
       isPlugin = isBukkitPlugin(jarFile);
-      if(isPlugin){
-        akPluginConfig = loadAkPluginConfig(jarFile);
-      }
     } catch (IOException e) {
       logger.error("Failed to test file is bukkit plugin");
     }
@@ -86,7 +82,7 @@ public final class EnvironmentBukkit extends EnvironmentUcl {
     try {
       ConfigPlugin akPluginConfig = null;
       try (val jarFile = new JarFile(artifact.file())) {
-        akPluginConfig = loadAkPluginConfig(jarFile);
+        akPluginConfig = ConfigPlugin.loadAkPluginConfig(jarFile, "asteroid-plugin.json");
       } catch (IOException e) {
         logger.error("Failed to load asteroid plugin config", e);
       }
@@ -110,7 +106,7 @@ public final class EnvironmentBukkit extends EnvironmentUcl {
                     .addResourceMap(it.priority(), it.from(), it.to()));
           }
           for (val entry : envConfig.getValue().dependencies()) {
-            internalEnvironment.add(fillDependencyDefault(artifact, entry));
+            internalEnvironment.add(AkDependency.fillDependencyDefault(artifact, entry));
           }
           internalEnvironment.deploy();
         }
@@ -179,29 +175,6 @@ public final class EnvironmentBukkit extends EnvironmentUcl {
   private static boolean isBukkitPlugin(JarFile jarFile) throws IOException {
     return jarFile.getEntry("plugin.yml") != null
         || jarFile.getEntry("paper-plugin.yml") != null;
-  }
-
-  private static ConfigPlugin loadAkPluginConfig(JarFile jarFile) throws IOException {
-    val asteroidPluginEntry = jarFile.getEntry("asteroid-plugin.json");
-    if (asteroidPluginEntry == null) {
-      return null;
-    }
-    try (val reader = new InputStreamReader(jarFile.getInputStream(asteroidPluginEntry), StandardCharsets.UTF_8)) {
-      return AkLoader.gson.fromJson(reader, ConfigPlugin.class);
-    }
-  }
-
-  private static AkDependency fillDependencyDefault(AkArtifact artifact, AkDependency dependency) {
-    return AkDependency.builder()
-        .groupId(dependency.groupId() == null ? artifact.groupId() : dependency.groupId())
-        .artifactId(dependency.artifactId() == null ? artifact.artifactId() : dependency.artifactId())
-        .version(dependency.version() == null ? artifact.version() : dependency.version())
-        .extension(dependency.extension() == null ? "jar" : dependency.extension())
-        .classifier(dependency.classifier() == null ? "" : dependency.classifier())
-        .scope(dependency.scope() == null ? "runtime" : dependency.scope())
-        .exclusions(dependency.exclusions())
-        .properties(dependency.properties())
-        .build();
   }
 
   @Override

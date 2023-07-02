@@ -2,7 +2,6 @@ package org.inksnow.asteroid;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.hrakaroo.glob.GlobPattern;
 import com.hrakaroo.glob.MatchingEngine;
 import org.inksnow.asteroid.internal.EnvironmentConfigure;
 import org.inksnow.asteroid.internal.MatchingEngineTypeAdapter;

@@ -6,7 +6,6 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.hrakaroo.glob.GlobPattern;
 import com.hrakaroo.glob.MatchingEngine;
-import lombok.val;
 
 import java.io.IOException;
 

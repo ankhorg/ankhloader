@@ -210,7 +210,7 @@ public final class AkConfigLoader {
     this.dependencies = loadDependencyConfig();
   }
 
-  public void applyToEnvironment(AkEnvironment environment){
+  public void applyToEnvironment(AkEnvironment environment) {
     for (AkDependency dependency : dependencies) {
       environment.add(dependency);
     }
@@ -222,7 +222,7 @@ public final class AkConfigLoader {
     });
     if (dependencyConfigArray == null) {
       return Collections.emptyList();
-    }else {
+    } else {
       return dependencyConfigArray;
     }
   }
